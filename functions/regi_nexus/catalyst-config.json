@@ -3,7 +3,10 @@
 		"name": "regi_nexus",
 		"stack": "node20",
 		"type": "advancedio",
-		"env_variables": {}
+		"env_variables": {
+			"EVENTS_TABLE_NAME": "Events",
+			"CREATE_EVENT_URL": "https://catalyst-hackathon-915650487.development.catalystserverless.com/create_event"
+		}
 	},
 	"execution": {
 		"main": "index.js"
