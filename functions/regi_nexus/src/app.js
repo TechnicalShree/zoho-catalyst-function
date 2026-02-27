@@ -9,6 +9,7 @@ export async function handleRequest(req, res) {
 	switch (url.pathname) {
 		case '/':
 			sendHtml(
+				req,
 				res,
 				200,
 				`<h1>Hello from index.js</h1><p>POST event URL: ${createEventUrl}</p>`
@@ -18,7 +19,7 @@ export async function handleRequest(req, res) {
 			await handleCreateEventRoute(req, res);
 			return;
 		default:
-			sendJson(res, 404, {
+			sendJson(req, res, 404, {
 				status: 'error',
 				message: 'You might find the page you are looking for at "/" path'
 			});
