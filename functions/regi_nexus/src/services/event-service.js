@@ -27,7 +27,21 @@ function getCreateEventPayload(body) {
 	return eventBody;
 }
 
-function toIsoDatetime(value, fieldName) {
+/**
+ * Formats a Date object into Catalyst ZCQL datetime format: 'yyyy-MM-dd HH:mm:ss'.
+ * Catalyst does NOT accept ISO 8601 (e.g. '2026-03-12T10:00:00.000Z').
+ */
+function toCatalystDatetime(date) {
+	const y = date.getUTCFullYear();
+	const m = String(date.getUTCMonth() + 1).padStart(2, '0');
+	const d = String(date.getUTCDate()).padStart(2, '0');
+	const h = String(date.getUTCHours()).padStart(2, '0');
+	const min = String(date.getUTCMinutes()).padStart(2, '0');
+	const s = String(date.getUTCSeconds()).padStart(2, '0');
+	return `${y}-${m}-${d} ${h}:${min}:${s}`;
+}
+
+function toDatetimeValue(value, fieldName) {
 	if (typeof value !== 'string') {
 		throw createHttpError(400, `${fieldName} must be a valid datetime string`);
 	}
@@ -37,7 +51,7 @@ function toIsoDatetime(value, fieldName) {
 		throw createHttpError(400, `${fieldName} must be a valid datetime string`);
 	}
 
-	return parsed.toISOString();
+	return toCatalystDatetime(parsed);
 }
 
 function toCapacity(value) {
@@ -73,7 +87,7 @@ function normalizeEventPayload(rawPayload) {
 	if (startsAtInput === undefined || startsAtInput === null || startsAtInput === '') {
 		throw createHttpError(400, 'starts_at is required');
 	}
-	normalized.starts_at = toIsoDatetime(startsAtInput, 'starts_at');
+	normalized.starts_at = toDatetimeValue(startsAtInput, 'starts_at');
 
 	normalized.slug =
 		typeof rawPayload.slug === 'string' && rawPayload.slug.trim()
@@ -92,8 +106,8 @@ function normalizeEventPayload(rawPayload) {
 		normalized.created_by_user_id = String(rawPayload.created_by_user_id);
 	}
 	normalized.created_at = rawPayload.created_at
-		? toIsoDatetime(rawPayload.created_at, 'created_at')
-		: new Date().toISOString();
+		? toDatetimeValue(rawPayload.created_at, 'created_at')
+		: toCatalystDatetime(new Date());
 
 	for (const column of Object.keys(normalized)) {
 		if (!EVENT_COLUMNS.has(column)) {

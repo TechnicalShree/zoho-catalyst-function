@@ -17,7 +17,13 @@ function toZCQLLiteral(value) {
 		return value ? 'true' : 'false';
 	}
 	if (value instanceof Date) {
-		return `'${escapeString(value.toISOString())}'`;
+		const y = value.getUTCFullYear();
+		const mo = String(value.getUTCMonth() + 1).padStart(2, '0');
+		const d = String(value.getUTCDate()).padStart(2, '0');
+		const h = String(value.getUTCHours()).padStart(2, '0');
+		const mi = String(value.getUTCMinutes()).padStart(2, '0');
+		const s = String(value.getUTCSeconds()).padStart(2, '0');
+		return `'${y}-${mo}-${d} ${h}:${mi}:${s}'`;
 	}
 	if (typeof value === 'object') {
 		return `'${escapeString(JSON.stringify(value))}'`;
