@@ -14,6 +14,7 @@ export async function handleRequest(req, res) {
 			);
 			return;
 		case '/create_event':
+		case '/create-event':
 			await handleCreateEventRoute(req, res);
 			return;
 		default:
