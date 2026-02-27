@@ -1,9 +1,7 @@
-'use strict';
-
-const { EVENTS_TABLE_NAME } = require('../config/env');
-const { insertEvent } = require('../repositories/event-repository');
-const { createHttpError } = require('../utils/errors');
-const { isPlainObject } = require('../utils/validators');
+import { EVENTS_TABLE_NAME } from '../config/env.js';
+import { insertEvent } from '../repositories/event-repository.js';
+import { createHttpError } from '../utils/errors.js';
+import { isPlainObject } from '../utils/validators.js';
 
 function getCreateEventPayload(body) {
 	if (isPlainObject(body.data)) {
@@ -19,7 +17,7 @@ function getCreateEventPayload(body) {
 	return eventBody;
 }
 
-async function createEvent(req, payload) {
+export async function createEvent(req, payload) {
 	if (!isPlainObject(payload)) {
 		throw createHttpError(400, 'Request body must be a JSON object');
 	}
@@ -44,7 +42,3 @@ async function createEvent(req, payload) {
 		throw error;
 	}
 }
-
-module.exports = {
-	createEvent
-};

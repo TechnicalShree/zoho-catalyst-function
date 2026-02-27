@@ -1,8 +1,6 @@
-'use strict';
+import { MAX_BODY_SIZE } from '../config/constants.js';
 
-const { MAX_BODY_SIZE } = require('../config/constants');
-
-function sendJson(res, statusCode, payload) {
+export function sendJson(res, statusCode, payload) {
 	res.writeHead(statusCode, {
 		'Content-Type': 'application/json',
 		'Access-Control-Allow-Origin': '*',
@@ -12,7 +10,7 @@ function sendJson(res, statusCode, payload) {
 	res.end(JSON.stringify(payload));
 }
 
-function sendHtml(res, statusCode, html) {
+export function sendHtml(res, statusCode, html) {
 	res.writeHead(statusCode, {
 		'Content-Type': 'text/html',
 		'Access-Control-Allow-Origin': '*'
@@ -21,7 +19,7 @@ function sendHtml(res, statusCode, html) {
 	res.end();
 }
 
-function sendCorsPreflight(res) {
+export function sendCorsPreflight(res) {
 	res.writeHead(204, {
 		'Access-Control-Allow-Origin': '*',
 		'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -30,7 +28,7 @@ function sendCorsPreflight(res) {
 	res.end();
 }
 
-function readRequestBody(req) {
+export function readRequestBody(req) {
 	return new Promise((resolve, reject) => {
 		let body = '';
 
@@ -46,10 +44,3 @@ function readRequestBody(req) {
 		req.on('error', reject);
 	});
 }
-
-module.exports = {
-	sendJson,
-	sendHtml,
-	sendCorsPreflight,
-	readRequestBody
-};

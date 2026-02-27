@@ -1,7 +1,6 @@
-'use strict';
+import catalyst from 'zcatalyst-sdk-node';
 
-const catalyst = require('zcatalyst-sdk-node');
-const { isSafeIdentifier } = require('../utils/validators');
+import { isSafeIdentifier } from '../utils/validators.js';
 
 function escapeString(value) {
 	return String(value).replace(/'/g, "''");
@@ -34,7 +33,7 @@ function buildInsertQuery(tableName, rowData) {
 	return `INSERT INTO ${tableName} (${columnSQL}) VALUES (${valueSQL})`;
 }
 
-async function insertEvent(req, tableName, eventPayload) {
+export async function insertEvent(req, tableName, eventPayload) {
 	if (!isSafeIdentifier(tableName)) {
 		throw new Error('Invalid table_name. Use letters, numbers, and underscores only.');
 	}
@@ -51,7 +50,3 @@ async function insertEvent(req, tableName, eventPayload) {
 
 	return zcql.executeZCQLQuery(query);
 }
-
-module.exports = {
-	insertEvent
-};

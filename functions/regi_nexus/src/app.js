@@ -1,10 +1,8 @@
-'use strict';
+import { CREATE_EVENT_URL } from './config/env.js';
+import { handleCreateEventRoute } from './routes/create-event-route.js';
+import { sendHtml, sendJson } from './utils/http.js';
 
-const { sendJson, sendHtml } = require('./utils/http');
-const { handleCreateEventRoute } = require('./routes/create-event-route');
-const { CREATE_EVENT_URL } = require('./config/env');
-
-async function handleRequest(req, res) {
+export async function handleRequest(req, res) {
 	const url = new URL(req.url || '/', 'http://localhost');
 
 	switch (url.pathname) {
@@ -25,7 +23,3 @@ async function handleRequest(req, res) {
 			});
 	}
 }
-
-module.exports = {
-	handleRequest
-};

@@ -1,5 +1,1 @@
-'use strict';
-
-module.exports = {
-	MAX_BODY_SIZE: 1024 * 1024
-};
+export const MAX_BODY_SIZE = 1024 * 1024;

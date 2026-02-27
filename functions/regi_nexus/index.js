@@ -1,12 +1,5 @@
-'use strict';
+import { handleRequest } from './src/app.js';
 
-const { IncomingMessage, ServerResponse } = require('http');
-const { handleRequest } = require('./src/app');
-
-/**
- * @param {IncomingMessage} req
- * @param {ServerResponse} res
- */
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
 	await handleRequest(req, res);
-};
+}

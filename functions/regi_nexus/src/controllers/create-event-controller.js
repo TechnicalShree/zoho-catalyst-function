@@ -1,9 +1,7 @@
-'use strict';
+import { createEvent } from '../services/event-service.js';
+import { readRequestBody, sendCorsPreflight, sendJson } from '../utils/http.js';
 
-const { createEvent } = require('../services/event-service');
-const { sendJson, sendCorsPreflight, readRequestBody } = require('../utils/http');
-
-async function createEventController(req, res) {
+export async function createEventController(req, res) {
 	if (req.method === 'OPTIONS') {
 		sendCorsPreflight(res);
 		return;
@@ -37,7 +35,3 @@ async function createEventController(req, res) {
 		});
 	}
 }
-
-module.exports = {
-	createEventController
-};

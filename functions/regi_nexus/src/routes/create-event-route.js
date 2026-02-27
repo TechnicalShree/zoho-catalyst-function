@@ -1,11 +1,5 @@
-'use strict';
+import { createEventController } from '../controllers/create-event-controller.js';
 
-const { createEventController } = require('../controllers/create-event-controller');
-
-async function handleCreateEventRoute(req, res) {
+export async function handleCreateEventRoute(req, res) {
 	await createEventController(req, res);
 }
-
-module.exports = {
-	handleCreateEventRoute
-};

@@ -2,6 +2,7 @@
 	"name": "regi_nexus",
 	"version": "1.0.0",
 	"main": "index.js",
+	"type": "module",
 	"author": "krushnasr96@gmail.com",
 	"dependencies": {
 		"zcatalyst-sdk-node": "latest"
