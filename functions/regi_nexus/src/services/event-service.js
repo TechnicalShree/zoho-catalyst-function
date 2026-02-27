@@ -1,4 +1,4 @@
-import { insertEvent, selectAllEvents } from '../repositories/event-repository.js';
+import { insertEvent, selectAllEvents, selectEventById } from '../repositories/event-repository.js';
 import { createHttpError } from '../utils/errors.js';
 import { isPlainObject } from '../utils/validators.js';
 
@@ -142,6 +142,17 @@ export async function createEvent(req, payload) {
 
 export async function getAllEvents(req) {
 	const queryResult = await selectAllEvents(req);
+	return { query_result: queryResult };
+}
+
+export async function getEventById(req, id) {
+	if (!id || typeof id !== 'string') {
+		throw createHttpError(400, 'Invalid or missing event ID');
+	}
+	const queryResult = await selectEventById(req, id);
+	if (!queryResult || queryResult.length === 0) {
+		throw createHttpError(404, 'Event not found');
+	}
 	return { query_result: queryResult };
 }
 

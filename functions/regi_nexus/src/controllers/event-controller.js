@@ -1,4 +1,4 @@
-import { createEvent, getAllEvents } from '../services/event-service.js';
+import { createEvent, getAllEvents, getEventById } from '../services/event-service.js';
 import { readRequestBody, sendJson } from '../utils/http.js';
 
 export async function eventController(req, res) {
@@ -19,7 +19,16 @@ export async function eventController(req, res) {
 
 async function handleGetEvents(req, res) {
     try {
-        const result = await getAllEvents(req);
+        const url = new URL(req.url || '/', 'http://localhost');
+        const pathParts = url.pathname.split('/').filter(Boolean);
+        const eventId = url.searchParams.get('id') || (pathParts.length > 1 ? pathParts[1] : null);
+
+        let result;
+        if (eventId) {
+            result = await getEventById(req, eventId);
+        } else {
+            result = await getAllEvents(req);
+        }
 
         sendJson(res, 200, {
             status: 'success',
