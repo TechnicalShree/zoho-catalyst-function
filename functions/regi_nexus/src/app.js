@@ -37,11 +37,6 @@ export async function handleRequest(req, res) {
 	const url = new URL(req.url || '/', 'http://localhost');
 	const eventUrl = `${API_BASE_URL}/event`;
 
-	if (url.pathname === '/event' || url.pathname.startsWith('/event/')) {
-		await handleEventRoute(req, res);
-		return;
-	}
-
 	switch (url.pathname) {
 		case '/':
 			sendHtml(
@@ -49,6 +44,9 @@ export async function handleRequest(req, res) {
 				200,
 				`<h1>Hello from Regi Nexus</h1><p>Event API: ${eventUrl} (GET = list, POST = create)</p>`
 			);
+			return;
+		case '/event':
+			await handleEventRoute(req, res);
 			return;
 		default:
 			sendJson(res, 404, {

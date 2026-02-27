@@ -20,8 +20,7 @@ export async function eventController(req, res) {
 async function handleGetEvents(req, res) {
     try {
         const url = new URL(req.url || '/', 'http://localhost');
-        const pathParts = url.pathname.split('/').filter(Boolean);
-        const eventId = url.searchParams.get('id') || (pathParts.length > 1 ? pathParts[1] : null);
+        const eventId = url.searchParams.get('id');
 
         let result;
         if (eventId) {
