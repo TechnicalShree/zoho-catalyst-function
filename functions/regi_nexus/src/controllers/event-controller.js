@@ -1,5 +1,6 @@
 import { createEvent, getAllEvents, getEventById } from '../services/event-service.js';
 import { readRequestBody, sendJson } from '../utils/http.js';
+import { appendDebugLog } from '../utils/logger.js';
 
 export async function eventController(req, res) {
     switch (req.method) {
@@ -21,11 +22,14 @@ async function handleGetEvents(req, res) {
     try {
         const url = new URL(req.url || '/', 'http://localhost');
         const eventId = url.searchParams.get('id');
+        await appendDebugLog(`GET /event request received. eventId=${eventId || 'ALL'}`, 'event-controller');
 
         let result;
         if (eventId) {
+            await appendDebugLog(`Fetching event by id: ${eventId}`, 'event-controller');
             result = await getEventById(req, eventId);
         } else {
+            await appendDebugLog('Fetching all events', 'event-controller');
             result = await getAllEvents(req);
         }
 
