@@ -5,6 +5,7 @@
 	"type": "module",
 	"author": "krushnasr96@gmail.com",
 	"dependencies": {
+		"cors": "^2.8.6",
 		"zcatalyst-sdk-node": "latest"
 	}
 }

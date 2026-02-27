@@ -1,39 +1,17 @@
 import { MAX_BODY_SIZE } from '../config/constants.js';
 
-function getCorsHeaders(req) {
-	const origin = req.headers.origin || '*';
-	const requestedHeaders = req.headers['access-control-request-headers'];
-	const requestedMethod = req.headers['access-control-request-method'];
-
-	return {
-		'Access-Control-Allow-Origin': origin,
-		'Access-Control-Allow-Methods': requestedMethod || 'POST, OPTIONS',
-		'Access-Control-Allow-Headers': requestedHeaders || 'Content-Type, Authorization',
-		'Access-Control-Allow-Credentials': 'true',
-		'Access-Control-Max-Age': '86400',
-		Vary: 'Origin'
-	};
-}
-
-export function sendJson(req, res, statusCode, payload) {
+export function sendJson(res, statusCode, payload) {
 	res.writeHead(statusCode, {
-		'Content-Type': 'application/json',
-		...getCorsHeaders(req)
+		'Content-Type': 'application/json'
 	});
 	res.end(JSON.stringify(payload));
 }
 
-export function sendHtml(req, res, statusCode, html) {
+export function sendHtml(res, statusCode, html) {
 	res.writeHead(statusCode, {
-		'Content-Type': 'text/html',
-		...getCorsHeaders(req)
+		'Content-Type': 'text/html'
 	});
 	res.write(html);
-	res.end();
-}
-
-export function sendCorsPreflight(req, res) {
-	res.writeHead(204, getCorsHeaders(req));
 	res.end();
 }
 
