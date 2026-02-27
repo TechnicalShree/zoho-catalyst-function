@@ -1,5 +1,6 @@
 import catalyst from 'zcatalyst-sdk-node';
 
+
 import { isSafeIdentifier } from '../utils/validators.js';
 
 function escapeString(value) {
@@ -31,28 +32,33 @@ function toZCQLLiteral(value) {
 	return `'${escapeString(value)}'`;
 }
 
-function buildInsertQuery(tableName, rowData) {
+function buildInsertQuery(rowData) {
 	const columns = Object.keys(rowData);
 	const columnSQL = columns.join(', ');
 	const valueSQL = columns.map((column) => toZCQLLiteral(rowData[column])).join(', ');
 
-	return `INSERT INTO ${tableName} (${columnSQL}) VALUES (${valueSQL})`;
+	return `INSERT INTO Events (${columnSQL}) VALUES (${valueSQL})`;
 }
 
-export async function insertEvent(req, tableName, eventPayload) {
-	if (!isSafeIdentifier(tableName)) {
-		throw new Error('Invalid table_name. Use letters, numbers, and underscores only.');
-	}
-
+export async function insertEvent(req, eventPayload) {
 	for (const column of Object.keys(eventPayload)) {
 		if (!isSafeIdentifier(column)) {
 			throw new Error(`Invalid column name: ${column}`);
 		}
 	}
 
-	const query = buildInsertQuery(tableName, eventPayload);
+	const query = buildInsertQuery(eventPayload);
 	const catalystApp = catalyst.initialize(req, { scope: 'admin' });
 	const zcql = catalystApp.zcql();
 
 	return zcql.executeZCQLQuery(query);
 }
+
+export async function selectAllEvents(req) {
+	const query = `SELECT * FROM Events ORDER BY CREATEDTIME DESC`;
+	const catalystApp = catalyst.initialize(req, { scope: 'admin' });
+	const zcql = catalystApp.zcql();
+
+	return zcql.executeZCQLQuery(query);
+}
+

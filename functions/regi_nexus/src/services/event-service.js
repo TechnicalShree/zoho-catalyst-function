@@ -1,5 +1,4 @@
-import { EVENTS_TABLE_NAME } from '../config/env.js';
-import { insertEvent } from '../repositories/event-repository.js';
+import { insertEvent, selectAllEvents } from '../repositories/event-repository.js';
 import { createHttpError } from '../utils/errors.js';
 import { isPlainObject } from '../utils/validators.js';
 
@@ -123,7 +122,6 @@ export async function createEvent(req, payload) {
 		throw createHttpError(400, 'Request body must be a JSON object');
 	}
 
-	const tableName = payload.table_name || EVENTS_TABLE_NAME;
 	const rawEventPayload = getCreateEventPayload(payload);
 
 	if (Object.keys(rawEventPayload).length === 0) {
@@ -132,15 +130,18 @@ export async function createEvent(req, payload) {
 	const eventPayload = normalizeEventPayload(rawEventPayload);
 
 	try {
-		const queryResult = await insertEvent(req, tableName, eventPayload);
-		return {
-			table: tableName,
-			query_result: queryResult
-		};
+		const queryResult = await insertEvent(req, eventPayload);
+		return { query_result: queryResult };
 	} catch (error) {
-		if (error.message.startsWith('Invalid table_name') || error.message.startsWith('Invalid column name')) {
+		if (error.message.startsWith('Invalid column name')) {
 			throw createHttpError(400, error.message);
 		}
 		throw error;
 	}
 }
+
+export async function getAllEvents(req) {
+	const queryResult = await selectAllEvents(req);
+	return { query_result: queryResult };
+}
+

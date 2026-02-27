@@ -1,6 +1,6 @@
 import cors from 'cors';
 import { API_BASE_URL } from './config/env.js';
-import { handleCreateEventRoute } from './routes/create-event-route.js';
+import { handleEventRoute } from './routes/event-route.js';
 import { sendHtml, sendJson } from './utils/http.js';
 
 // Configure the cors middleware.
@@ -35,18 +35,18 @@ export async function handleRequest(req, res) {
 	}
 
 	const url = new URL(req.url || '/', 'http://localhost');
-	const createEventUrl = `${API_BASE_URL}/event/create`;
+	const eventUrl = `${API_BASE_URL}/event`;
 
 	switch (url.pathname) {
 		case '/':
 			sendHtml(
 				res,
 				200,
-				`<h1>Hello from index.js</h1><p>POST event URL: ${createEventUrl}</p>`
+				`<h1>Hello from Regi Nexus</h1><p>Event API: ${eventUrl} (GET = list, POST = create)</p>`
 			);
 			return;
-		case '/event/create':
-			await handleCreateEventRoute(req, res);
+		case '/event':
+			await handleEventRoute(req, res);
 			return;
 		default:
 			sendJson(res, 404, {
