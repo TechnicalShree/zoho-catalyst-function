@@ -1,6 +1,7 @@
 import cors from 'cors';
 import { API_BASE_URL } from './config/env.js';
 import { handleEventRoute } from './routes/event-route.js';
+import { handleAttendeeRoute } from './routes/attendee-route.js';
 import { sendHtml, sendJson } from './utils/http.js';
 
 // Configure the cors middleware.
@@ -47,6 +48,9 @@ export async function handleRequest(req, res) {
 			return;
 		case '/event':
 			await handleEventRoute(req, res);
+			return;
+		case '/attendee':
+			await handleAttendeeRoute(req, res);
 			return;
 		default:
 			sendJson(res, 404, {
