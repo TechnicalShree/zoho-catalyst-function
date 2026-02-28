@@ -3,11 +3,21 @@ import { readRequestBody, sendJson } from '../utils/http.js';
 import { appendDebugLog } from '../utils/logger.js';
 
 export async function eventController(req, res) {
+    const url = new URL(req.url || '/', 'http://localhost');
+    const isSingleEventApi = url.pathname === '/event';
+
     switch (req.method) {
         case 'GET':
-            await handleGetEvents(req, res);
+            await handleGetEvents(req, res, isSingleEventApi);
             return;
         case 'POST':
+            if (isSingleEventApi) {
+                sendJson(res, 405, {
+                    status: 'error',
+                    message: 'POST not allowed on /event. Use /events to create an event.'
+                });
+                return;
+            }
             await handleCreateEvent(req, res);
             return;
         default:
@@ -18,18 +28,24 @@ export async function eventController(req, res) {
     }
 }
 
-async function handleGetEvents(req, res) {
+async function handleGetEvents(req, res, isSingleEventApi) {
     try {
         const url = new URL(req.url || '/', 'http://localhost');
-        const eventSlug = url.searchParams.get('slug');
-        await appendDebugLog(`GET /event request received. eventSlug=${eventSlug || 'ALL'}`, 'event-controller');
+        const eventSlug = url.searchParams.get('slug') || url.searchParams.get('id');
+        await appendDebugLog(`GET ${url.pathname} request received. identifier=${eventSlug || 'ALL'}`, 'event-controller');
 
         let result;
-        if (eventSlug) {
-            await appendDebugLog(`Fetching event by slug: ${eventSlug}`, 'event-controller');
+        if (isSingleEventApi) {
+            if (!eventSlug) {
+                return sendJson(res, 400, {
+                    status: 'error',
+                    message: 'A slug or id query parameter is required for the /event API (e.g. /event?slug=dsfsdf)'
+                });
+            }
+            await appendDebugLog(`Fetching single event by slug/id: ${eventSlug}`, 'event-controller');
             result = await getEventById(req, eventSlug);
         } else {
-            await appendDebugLog('Fetching all events', 'event-controller');
+            await appendDebugLog('Fetching all events via /events', 'event-controller');
             result = await getAllEvents(req);
         }
 

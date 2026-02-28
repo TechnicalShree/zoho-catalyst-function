@@ -45,6 +45,7 @@ export async function handleRequest(req, res) {
 				`<h1>Hello from Regi Nexus</h1><p>Event API: ${eventUrl} (GET = list, POST = create)</p>`
 			);
 			return;
+		case '/event':
 		case '/events':
 			await handleEventRoute(req, res);
 			return;
