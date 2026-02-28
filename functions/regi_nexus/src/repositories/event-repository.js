@@ -54,8 +54,16 @@ export async function insertEvent(req, eventPayload) {
 	return zcql.executeZCQLQuery(query);
 }
 
-export async function selectAllEvents(req) {
-	const query = `SELECT * FROM Events ORDER BY CREATEDTIME DESC`;
+export async function selectAllEvents(req, limit, offset) {
+	const query = `SELECT * FROM Events ORDER BY CREATEDTIME DESC LIMIT ${limit} OFFSET ${offset}`;
+	const catalystApp = catalyst.initialize(req, { scope: 'admin' });
+	const zcql = catalystApp.zcql();
+
+	return zcql.executeZCQLQuery(query);
+}
+
+export async function countAllEvents(req) {
+	const query = `SELECT COUNT(ROWID) FROM Events`;
 	const catalystApp = catalyst.initialize(req, { scope: 'admin' });
 	const zcql = catalystApp.zcql();
 

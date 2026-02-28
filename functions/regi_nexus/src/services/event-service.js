@@ -1,4 +1,4 @@
-import { insertEvent, selectAllEvents, selectEventById } from '../repositories/event-repository.js';
+import { insertEvent, selectAllEvents, countAllEvents, selectEventById } from '../repositories/event-repository.js';
 import { createHttpError } from '../utils/errors.js';
 import { isPlainObject } from '../utils/validators.js';
 
@@ -7,6 +7,7 @@ const EVENT_COLUMNS = new Set([
 	'name',
 	'venue',
 	'starts_at',
+	'ends_at',
 	'capacity',
 	'banner_object_url',
 	'created_by_user_id',
@@ -93,6 +94,11 @@ function normalizeEventPayload(rawPayload) {
 	}
 	normalized.starts_at = toDatetimeValue(startsAtInput, 'starts_at');
 
+	const endsAtInput = rawPayload.ends_at ?? rawPayload.end_at ?? rawPayload.end_time;
+	if (endsAtInput !== undefined && endsAtInput !== null && endsAtInput !== '') {
+		normalized.ends_at = toDatetimeValue(endsAtInput, 'ends_at');
+	}
+
 	normalized.slug =
 		typeof rawPayload.slug === 'string' && rawPayload.slug.trim()
 			? rawPayload.slug.trim()
@@ -145,9 +151,23 @@ export async function createEvent(req, payload) {
 	}
 }
 
-export async function getAllEvents(req) {
-	const queryResult = await selectAllEvents(req);
-	return { query_result: queryResult };
+export async function getAllEvents(req, { limit = 10, offset = 0 } = {}) {
+	const parsedLimit = Math.max(1, Math.min(Number(limit) || 10, 200));
+	const parsedOffset = Math.max(0, Number(offset) || 0);
+
+	const [queryResult, countResult] = await Promise.all([
+		selectAllEvents(req, parsedLimit, parsedOffset),
+		countAllEvents(req)
+	]);
+
+	const totalCount = countResult?.[0]?.Events?.ROWID ?? 0;
+
+	return {
+		query_result: queryResult,
+		total_count: Number(totalCount),
+		limit: parsedLimit,
+		offset: parsedOffset
+	};
 }
 
 export async function getEventById(req, slug) {

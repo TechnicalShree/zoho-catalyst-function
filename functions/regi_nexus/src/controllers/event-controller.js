@@ -28,15 +28,23 @@ async function handleGetEvents(req, res) {
         if (eventSlug) {
             await appendDebugLog(`Fetching event by slug: ${eventSlug}`, 'event-controller');
             result = await getEventById(req, eventSlug);
+            sendJson(res, 200, {
+                status: 'success',
+                data: result.query_result
+            });
         } else {
-            await appendDebugLog('Fetching all events', 'event-controller');
-            result = await getAllEvents(req);
+            const limit = url.searchParams.get('limit');
+            const offset = url.searchParams.get('offset');
+            await appendDebugLog(`Fetching all events (limit=${limit}, offset=${offset})`, 'event-controller');
+            result = await getAllEvents(req, { limit, offset });
+            sendJson(res, 200, {
+                status: 'success',
+                data: result.query_result,
+                total_count: result.total_count,
+                limit: result.limit,
+                offset: result.offset
+            });
         }
-
-        sendJson(res, 200, {
-            status: 'success',
-            data: result.query_result
-        });
     } catch (error) {
         sendJson(res, error.statusCode || 500, {
             status: 'error',
