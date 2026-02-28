@@ -160,8 +160,6 @@ export async function getAllEvents(req, { limit = 10, offset = 0 } = {}) {
 		countAllEvents(req)
 	]);
 
-	console.log('countResult:', JSON.stringify(countResult, null, 2));
-
 	let totalCount = 0;
 	const firstRow = countResult?.[0];
 	if (firstRow) {
