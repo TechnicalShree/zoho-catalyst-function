@@ -5,6 +5,7 @@ import { isPlainObject } from '../utils/validators.js';
 const EVENT_COLUMNS = new Set([
 	'slug',
 	'name',
+	'venue',
 	'starts_at',
 	'capacity',
 	'banner_object_url',
@@ -81,6 +82,10 @@ function normalizeEventPayload(rawPayload) {
 		throw createHttpError(400, 'name is required');
 	}
 	normalized.name = rawPayload.name.trim();
+
+	if (rawPayload.venue !== undefined) {
+		normalized.venue = String(rawPayload.venue).trim();
+	}
 
 	const startsAtInput = rawPayload.starts_at ?? rawPayload.start_at ?? rawPayload.start_time;
 	if (startsAtInput === undefined || startsAtInput === null || startsAtInput === '') {
