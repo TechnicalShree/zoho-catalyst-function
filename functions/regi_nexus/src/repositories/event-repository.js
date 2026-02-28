@@ -54,18 +54,24 @@ export async function insertEvent(req, eventPayload) {
 	return zcql.executeZCQLQuery(query);
 }
 
-export async function selectAllEvents(req, limit, offset) {
+export async function selectAllEvents(req, limit, offset, search) {
 	// ZCQL OFFSET is 1-based, so convert from 0-based API offset
 	const zcqlOffset = offset + 1;
-	const query = `SELECT * FROM Events ORDER BY CREATEDTIME DESC LIMIT ${limit} OFFSET ${zcqlOffset}`;
+	const whereClause = search
+		? ` WHERE name LIKE '%${escapeString(search)}%' OR venue LIKE '%${escapeString(search)}%' OR slug LIKE '%${escapeString(search)}%'`
+		: '';
+	const query = `SELECT * FROM Events${whereClause} ORDER BY CREATEDTIME DESC LIMIT ${limit} OFFSET ${zcqlOffset}`;
 	const catalystApp = catalyst.initialize(req, { scope: 'admin' });
 	const zcql = catalystApp.zcql();
 
 	return zcql.executeZCQLQuery(query);
 }
 
-export async function countAllEvents(req) {
-	const query = `SELECT COUNT(ROWID) FROM Events`;
+export async function countAllEvents(req, search) {
+	const whereClause = search
+		? ` WHERE name LIKE '%${escapeString(search)}%' OR venue LIKE '%${escapeString(search)}%' OR slug LIKE '%${escapeString(search)}%'`
+		: '';
+	const query = `SELECT COUNT(ROWID) FROM Events${whereClause}`;
 	const catalystApp = catalyst.initialize(req, { scope: 'admin' });
 	const zcql = catalystApp.zcql();
 

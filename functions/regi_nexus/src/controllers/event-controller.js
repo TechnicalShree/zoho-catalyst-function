@@ -35,8 +35,9 @@ async function handleGetEvents(req, res) {
         } else {
             const limit = url.searchParams.get('limit');
             const offset = url.searchParams.get('offset');
-            await appendDebugLog(`Fetching all events (limit=${limit}, offset=${offset})`, 'event-controller');
-            result = await getAllEvents(req, { limit, offset });
+            const search = url.searchParams.get('search');
+            await appendDebugLog(`Fetching all events (limit=${limit}, offset=${offset}, search=${search})`, 'event-controller');
+            result = await getAllEvents(req, { limit, offset, search });
             sendJson(res, 200, {
                 status: 'success',
                 data: result.query_result,

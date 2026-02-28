@@ -151,13 +151,14 @@ export async function createEvent(req, payload) {
 	}
 }
 
-export async function getAllEvents(req, { limit = 10, offset = 0 } = {}) {
+export async function getAllEvents(req, { limit = 10, offset = 0, search = '' } = {}) {
 	const parsedLimit = Math.max(1, Math.min(Number(limit) || 10, 200));
 	const parsedOffset = Math.max(0, Number(offset) || 0);
+	const trimmedSearch = typeof search === 'string' ? search.trim() : '';
 
 	const [queryResult, countResult] = await Promise.all([
-		selectAllEvents(req, parsedLimit, parsedOffset),
-		countAllEvents(req)
+		selectAllEvents(req, parsedLimit, parsedOffset, trimmedSearch || null),
+		countAllEvents(req, trimmedSearch || null)
 	]);
 
 	let totalCount = 0;
