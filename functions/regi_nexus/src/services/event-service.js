@@ -160,11 +160,21 @@ export async function getAllEvents(req, { limit = 10, offset = 0 } = {}) {
 		countAllEvents(req)
 	]);
 
-	const totalCount = countResult?.[0]?.Events?.ROWID ?? 0;
+	console.log('countResult:', JSON.stringify(countResult, null, 2));
+
+	let totalCount = 0;
+	const firstRow = countResult?.[0];
+	if (firstRow) {
+		// ZCQL wraps results under the table name; extract the first nested value
+		const inner = firstRow.Events ?? Object.values(firstRow)[0];
+		if (inner !== null && inner !== undefined) {
+			totalCount = typeof inner === 'object' ? Number(Object.values(inner)[0]) : Number(inner);
+		}
+	}
 
 	return {
 		query_result: queryResult,
-		total_count: Number(totalCount),
+		total_count: totalCount || 0,
 		limit: parsedLimit,
 		offset: parsedOffset
 	};
