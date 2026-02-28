@@ -145,14 +145,13 @@ export async function getAllEvents(req) {
 	return { query_result: queryResult };
 }
 
-export async function getEventById(req, id) {
-	if (!id || typeof id !== 'string') {
-		throw createHttpError(400, 'Invalid or missing event ID');
+export async function getEventById(req, slug) {
+	if (!slug || typeof slug !== 'string') {
+		throw createHttpError(400, 'Invalid or missing event slug');
 	}
-	const queryResult = await selectEventById(req, id);
+	const queryResult = await selectEventById(req, slug);
 	if (!queryResult || queryResult.length === 0) {
 		throw createHttpError(404, 'Event not found');
 	}
 	return { query_result: queryResult };
 }
-

@@ -62,13 +62,10 @@ export async function selectAllEvents(req) {
 	return zcql.executeZCQLQuery(query);
 }
 
-export async function selectEventById(req, id) {
-	// ZCQL expects ROWID to be compared as a literal string or number.
-	// We wrap it in single quotes to be safe.
-	const query = `SELECT * FROM Events WHERE ROWID = '${escapeString(id)}'`;
+export async function selectEventById(req, slug) {
+	const query = `SELECT * FROM Events WHERE slug = '${escapeString(slug)}'`;
 	const catalystApp = catalyst.initialize(req, { scope: 'admin' });
 	const zcql = catalystApp.zcql();
 
 	return zcql.executeZCQLQuery(query);
 }
-

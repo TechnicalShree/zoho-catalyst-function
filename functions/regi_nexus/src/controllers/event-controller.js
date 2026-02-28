@@ -21,13 +21,13 @@ export async function eventController(req, res) {
 async function handleGetEvents(req, res) {
     try {
         const url = new URL(req.url || '/', 'http://localhost');
-        const eventId = url.searchParams.get('id');
-        await appendDebugLog(`GET /event request received. eventId=${eventId || 'ALL'}`, 'event-controller');
+        const eventSlug = url.searchParams.get('slug');
+        await appendDebugLog(`GET /event request received. eventSlug=${eventSlug || 'ALL'}`, 'event-controller');
 
         let result;
-        if (eventId) {
-            await appendDebugLog(`Fetching event by id: ${eventId}`, 'event-controller');
-            result = await getEventById(req, eventId);
+        if (eventSlug) {
+            await appendDebugLog(`Fetching event by slug: ${eventSlug}`, 'event-controller');
+            result = await getEventById(req, eventSlug);
         } else {
             await appendDebugLog('Fetching all events', 'event-controller');
             result = await getAllEvents(req);
