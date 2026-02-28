@@ -13,7 +13,7 @@ export async function eventController(req, res) {
         default:
             sendJson(res, 405, {
                 status: 'error',
-                message: `Method ${req.method} not allowed. Use GET or POST on /event`
+                message: `Method ${req.method} not allowed. Use GET or POST on /events`
             });
     }
 }

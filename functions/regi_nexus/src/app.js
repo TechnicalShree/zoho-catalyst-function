@@ -35,7 +35,7 @@ export async function handleRequest(req, res) {
 	}
 
 	const url = new URL(req.url || '/', 'http://localhost');
-	const eventUrl = `${API_BASE_URL}/event`;
+	const eventUrl = `${API_BASE_URL}/events`;
 
 	switch (url.pathname) {
 		case '/':
@@ -45,7 +45,7 @@ export async function handleRequest(req, res) {
 				`<h1>Hello from Regi Nexus</h1><p>Event API: ${eventUrl} (GET = list, POST = create)</p>`
 			);
 			return;
-		case '/event':
+		case '/events':
 			await handleEventRoute(req, res);
 			return;
 		default:
