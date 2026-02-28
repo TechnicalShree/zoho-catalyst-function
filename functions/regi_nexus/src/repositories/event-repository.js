@@ -55,7 +55,9 @@ export async function insertEvent(req, eventPayload) {
 }
 
 export async function selectAllEvents(req, limit, offset) {
-	const query = `SELECT * FROM Events ORDER BY CREATEDTIME DESC LIMIT ${limit} OFFSET ${offset}`;
+	// ZCQL OFFSET is 1-based, so convert from 0-based API offset
+	const zcqlOffset = offset + 1;
+	const query = `SELECT * FROM Events ORDER BY CREATEDTIME DESC LIMIT ${limit} OFFSET ${zcqlOffset}`;
 	const catalystApp = catalyst.initialize(req, { scope: 'admin' });
 	const zcql = catalystApp.zcql();
 
