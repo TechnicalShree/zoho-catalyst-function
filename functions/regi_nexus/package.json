@@ -6,6 +6,7 @@
 	"author": "krushnasr96@gmail.com",
 	"dependencies": {
 		"cors": "^2.8.6",
+		"uuid": "^13.0.0",
 		"zcatalyst-sdk-node": "latest"
 	}
 }
